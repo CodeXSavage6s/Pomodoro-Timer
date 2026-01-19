@@ -7,11 +7,16 @@
         <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
         <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
         <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+        
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
-        <div id="root"></div>
+    <div >
+        <div id="aside" class="fixed top-3 left-3 col-2 w-[50vw]"></div>
+        <div id="root" class="col-span-2 ml-6 mt-7"></div>
+    </div>
     <script src="script.js"></script>
-    <script type="text/babel" src="react.jsx"></script>
+    <script type="text/babel" src="pomodoro.jsx"></script>
     </body>
 </html>

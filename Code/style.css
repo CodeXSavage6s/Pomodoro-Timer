@@ -8,6 +8,7 @@ body {
 }
 .btn {
     border-bottom: 1vh solid navy;
+    transition: border-bottom 0.3s ease
 }
 h1 {
     font-family: "Pinyon Script", cursive;

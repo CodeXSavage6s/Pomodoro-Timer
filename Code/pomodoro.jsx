@@ -1,38 +1,116 @@
+const PageContext = React.createContext();
+
+function PageProvider({ children }) {
+  const [page, setPage] = React.useState("time");
+
+  return (
+    <PageContext.Provider value={{ page, setPage }}>
+      {children}
+    </PageContext.Provider>
+  );
+}
+
 function SideBar() {
-  const [seen, setSeen] = React.useState(false)
+  const [seen, setSeen] = React.useState(false);
+  const { setPage } = React.useContext(PageContext);
+
   return (
     <div className="absolute block left-0 top-0">
-      <i class="fa-solid fa-bars text-blue-900 text-2xl"
-      hidden={seen}
-      onClick={() => setSeen(n => !n)}
-      ></i>
+      <i
+        className="fa-solid fa-bars text-blue-900 text-2xl sm:hidden"
+        hidden={seen}
+        onClick={() => setSeen(n => !n)}
+      />
+
       <div
-      hidden={!seen}
-      className="sid leading-[3] p-2 shadow-xl rounded-md"
+        className="sid leading-[3] p-2 shadow-xl rounded-md sm:block"
+        hidden={!seen}
       >
-        <i class="absolute fa-solid fa-xmark right-4 top-4 text-xl"
-        onClick={() => setSeen(n => !n)}></i><br />
-        <li>Account</li>
-        <li
-        onClick={() => {ReactDOM.createRoot(document.getElementById("root")).render(<Time />); setSeen(n => !n)}}
-        >Current Time</li>
-        <li
-        onClick={() => {ReactDOM.createRoot(document.getElementById("root")).render(<App />); setSeen(n => !n)}}
-        >Pomodoro Time</li>
-        <li>Stop Watch</li>
+        <i
+          className="absolute fa-solid fa-xmark right-4 top-4 text-xl sm:hidden"
+          onClick={() => setSeen(n => !n)}
+        />
+        <br />
+
+        <div className="flex flex-col gap-1">
+
+          <label className="cursor-pointer px-3 rounded-md has-[:checked]:bg-blue-950">
+            <input
+              type="radio"
+              name="nav"
+              className="hidden"
+              defaultChecked
+              onChange={() => setPage("account")}
+            />
+            Account
+          </label>
+
+          <label className="cursor-pointer px-3 rounded-md has-[:checked]:bg-blue-950"
+          onClick={() => {
+                setPage("time");
+                setSeen(false)}}>
+            <input
+              type="radio"
+              name="nav"
+              className="hidden"
+              onChange={() => {
+                setPage("time");
+                setSeen(false);
+              }}
+            />
+            Current Time
+          </label>
+
+          <label className="cursor-pointer px-3 rounded-md has-[:checked]:bg-blue-950">
+            <input
+              type="radio"
+              name="nav"
+              className="hidden"
+              onChange={() => {
+                setPage("pomodoro");
+                setSeen(false);
+              }}
+            />
+            Pomodoro Time
+          </label>
+
+          <label className="cursor-pointer px-3 rounded-md has-[:checked]:bg-blue-950">
+            <input
+              type="radio"
+              name="nav"
+              className="hidden"
+              onChange={() => setPage("stopwatch")}
+            />
+            Stop Watch
+          </label>
+
+          <label className="cursor-pointer px-3 rounded-md has-[:checked]:bg-blue-950">
+            <input
+              type="radio"
+              name="nav"
+              className="hidden"
+              onChange={() => setPage("alarm")}
+            />
+            Alarm
+          </label>
+
+        </div>
       </div>
     </div>
-  )
+  );
 }
-ReactDOM.createRoot(document.getElementById("aside")).render(<SideBar />)
+
 function App() {
-    return (
-        <div>
-            
-            <CountDown />
-        </div>
-    )
+  const { page } = React.useContext(PageContext);
+
+  if (page === "time") return <Time />;
+  if (page === "pomodoro") return <CountDown />;
+  if (page === "stopwatch") return <h1 className="text-6xl py-[30vh]">Stop Watch</h1>;
+  if (page === "alarm") return <h1 className="text-6xl py-[30vh]">Alarm</h1>;
+
+  return <h1 className="text-6xl py-[30vh]">Account</h1>;
 }
+
 function CountDown() {
   const [time, setTime] = React.useState(25 * 60 * 1000);
   const [running, setRunning] = React.useState(false);
@@ -59,7 +137,7 @@ function CountDown() {
   const millis = Math.floor((time % 1000) / 10);
 
   return (
-    <div id="CountDown" className="text-center justify-self-end font-black leading-[2]">
+    <div id="CountDown" className="text-center justify-self-center font-black leading-[2]">
       <h1 className="text-blue-700 text-5xl font-black text-center" size>Pomodoro Timer</h1>
       <div className="inline-flex gap-4">
   <label className="cursor-pointer has-[:checked]:border-b-[1vh] border-b-blue-900">
@@ -148,4 +226,11 @@ function Time() {
     <h1 className="text-6xl font-black py-5 align-self-center justify-center py-[30vh]">{time}</h1>
   )
 }
-ReactDOM.createRoot(document.getElementById("root")).render(<App />)
+
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <PageProvider>
+    <App />
+    <SideBar />
+  </PageProvider>
+);
+

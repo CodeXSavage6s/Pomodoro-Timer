@@ -1,7 +1,7 @@
 const PageContext = React.createContext();
 
 function PageProvider({ children }) {
-  const [page, setPage] = React.useState("time");
+  const [page, setPage] = React.useState("pomodoro");
 
   return (
     <PageContext.Provider value={{ page, setPage }}>

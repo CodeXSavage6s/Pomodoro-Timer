@@ -1,7 +1,7 @@
 const PageContext = React.createContext();
 
 function PageProvider({ children }) {
-  const [page, setPage] = React.useState("pomodoro");
+  const [page, setPage] = React.useState("stopwatch");
 
   return (
     <PageContext.Provider value={{ page, setPage }}>
@@ -15,7 +15,7 @@ function SideBar() {
   const { setPage } = React.useContext(PageContext);
 
   return (
-    <div className="absolute block left-0 top-0">
+    <div className="absolute block left-5 top-5">
       <i
         className="fa-solid fa-bars text-blue-900 text-2xl sm:hidden"
         hidden={seen}
@@ -45,10 +45,7 @@ function SideBar() {
             Account
           </label>
 
-          <label className="cursor-pointer px-3 rounded-md has-[:checked]:bg-blue-950"
-          onClick={() => {
-                setPage("time");
-                setSeen(false)}}>
+          <label className="cursor-pointer px-3 rounded-md has-[:checked]:bg-blue-950">
             <input
               type="radio"
               name="nav"
@@ -79,7 +76,7 @@ function SideBar() {
               type="radio"
               name="nav"
               className="hidden"
-              onChange={() => setPage("stopwatch")}
+              onChange={() => {setPage("stopwatch"); setSeen(n => !n)}}
             />
             Stop Watch
           </label>
@@ -89,7 +86,7 @@ function SideBar() {
               type="radio"
               name="nav"
               className="hidden"
-              onChange={() => setPage("alarm")}
+              onChange={() => {setPage("alarm"); setSeen(n => !n)}}
             />
             Alarm
           </label>
@@ -105,7 +102,7 @@ function App() {
 
   if (page === "time") return <Time />;
   if (page === "pomodoro") return <CountDown />;
-  if (page === "stopwatch") return <h1 className="text-6xl py-[30vh]">Stop Watch</h1>;
+  if (page === "stopwatch") return <StopWatch />
   if (page === "alarm") return <h1 className="text-6xl py-[30vh]">Alarm</h1>;
 
   return <h1 className="text-6xl py-[30vh]">Account</h1>;
@@ -225,6 +222,61 @@ function Time() {
   return (
     <h1 className="text-6xl font-black py-5 align-self-center justify-center py-[30vh]">{time}</h1>
   )
+}
+
+function StopWatch() {
+  const [time, setTime] = React.useState(0);
+  const [running, setRunning] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!running) return;
+
+    const interval = setInterval(() => {
+      setTime(t => {
+       // if (t <= 10) {
+          //clearInterval(interval);
+          //setRunning(false);
+          //return 0;
+        //}
+        return t + 10;
+      });
+    }, 10);
+
+    return () => clearInterval(interval);
+  }, [running]);
+
+  const minutes = Math.floor(time / 60000);
+  const seconds = Math.floor((time % 60000) / 1000);
+  const millis = Math.floor((time % 1000) / 10);
+
+  return (
+    <div id="CountDown"
+    className="justify-self-center align-self-center py-[20vh] box-border">
+      <h1 className="text-6xl font-black py-5">
+        {minutes}:{seconds.toString().padStart(2, "0")}:
+        {millis.toString().padStart(2, "0")}
+      </h1>
+
+      <div id="btns"
+      className="flex justify-between font-bold">
+        <button onClick={() => !running && setRunning(true)} className="btn">Start</button>
+        <button onClick={() => setRunning(false)} className="btn">Stop</button>
+        <button onClick={() => { setTime(0); setRunning(false); }} className="btn">
+          Reset
+        </button>
+      </div>
+
+      <br />
+      <input
+        type="number"
+        placeholder="Set Seconds..."
+        onFocus={() => setRunning(false)}
+        onChange={e => setTime(e.target.value * 1000)}
+        onKeyDown={e => e.key === "Enter" && setRunning(true)}
+        className="bg-blue-950 rounded-2xl p-1"
+      />
+    </div>
+  );
 }
 
 ReactDOM.createRoot(document.getElementById("root")).render(

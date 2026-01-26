@@ -1,0 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Pinyon+Script&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Macondo&family=Pinyon+Script&display=swap');
+
+body {
+    background: rgb(4, 4, 37);
+    color: white;
+    font-family:  "Mancodoo", cursive;
+    padding: 2vh;
+}
+.btn {
+    border-bottom: 1vh solid navy;
+    transition: border-bottom 0.3s ease
+}
+h1 {
+    font-family: "Pinyon Script", cursive;
+}
+.span, li {
+    cursor: pointer;
+}
+.sid {
+    background: rgb(4, 4, 37);
+}

@@ -238,33 +238,66 @@ function CountDown() {
 }
 
 function Time() {
-  function getTime() {
-    const d = new Date();
-    let hours = d.getHours();
-    const minutes = d.getMinutes().toString().padStart(2, "0");
-    const sec = d.getSeconds().toString().padStart(2, "0");
-    const ampm = hours >= 12 ? "PM" : "AM";
+  const timeZones = [
+    { label: "Local Time", value: Intl.DateTimeFormat().resolvedOptions().timeZone },
+    { label: "UTC", value: "UTC" },
+    { label: "New York (EST)", value: "America/New_York" },
+    { label: "London (GMT)", value: "Europe/London" },
+    { label: "Berlin (CET)", value: "Europe/Berlin" },
+    { label: "Dubai (GST)", value: "Asia/Dubai" },
+    { label: "India (IST)", value: "Asia/Kolkata" },
+    { label: "China (CST)", value: "Asia/Shanghai" },
+    { label: "Japan (JST)", value: "Asia/Tokyo" },
+    { label: "Australia (AEST)", value: "Australia/Sydney" },
+  ];
 
-    hours = hours % 12 || 12;
+  const [zone, setZone] = React.useState(timeZones[0].value);
+  const [input, setInput] = React.useState(timeZones[0].label);
+  const [time, setTime] = React.useState("");
 
-    return `${hours}:${minutes}:${sec} ${ampm}`;
+  function getTime(tz) {
+    return new Intl.DateTimeFormat("en-US", {
+      timeZone: tz,
+      hour: "numeric",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true,
+    }).format(new Date());
   }
-
-  const [time, setTime] = React.useState(getTime());
 
   React.useEffect(() => {
     const interval = setInterval(() => {
-      setTime(getTime());
+      setTime(getTime(zone));
     }, 1000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [zone]);
+
+  function handleZoneChange(value) {
+    setInput(value);
+    const match = timeZones.find(z => z.label === value);
+    if (match) setZone(match.value);
+  }
 
   return (
-    <div>
-    <h1 className="text-6xl font-black py-5 text-center py-[30vh]">{time}</h1>
+    <div className="text-center py-[25vh]">
+      <h1 className="text-6xl font-black mb-6">{time}</h1>
+
+      <input
+        list="timezones"
+        value={input}
+        onChange={e => handleZoneChange(e.target.value)}
+        placeholder="Select time zone..."
+        className="bg-blue-900 text-white p-3 rounded-xl font-bold text-center"
+      />
+
+      <datalist id="timezones">
+        {timeZones.map(z => (
+          <option key={z.value} value={z.label} />
+        ))}
+      </datalist>
     </div>
-  )
+  );
 }
 
 function StopWatch() {

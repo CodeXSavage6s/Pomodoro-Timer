@@ -552,5 +552,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   <PageProvider>
     <App />
     <SideBar />
+    <footer class="fixed text-red-600 right-5 bottom-5 text-[5vh] font-black">_By_Savage_</footer>
   </PageProvider>
 );
